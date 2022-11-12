@@ -17,6 +17,4 @@ func main() {
 	}
 
 	console.RunCommand(container)
-
-
 }
