@@ -5,6 +5,7 @@ import (
 	"github.com/gohade/hade/framework"
 	"github.com/gohade/hade/framework/cobra"
 	"github.com/gohade/hade/framework/command"
+	"time"
 )
 
 func RunCommand(container framework.Container) error {
@@ -36,5 +37,5 @@ func RunCommand(container framework.Container) error {
 }
 
 func AddAppCommand(rootCmd *cobra.Command) {
-	rootCmd.AddCommand(demo.InitFoo())
+	rootCmd.AddDistributedCronCommand("foo_func_for_test", "*/5 * * * * *", demo.FooCommand, 2*time.Second)
 }

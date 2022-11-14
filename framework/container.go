@@ -57,10 +57,10 @@ func (hade *HadeContainer) PrintProvides() []string {
 //将服务器和关键字做了绑定
 func (hade *HadeContainer) Bind(provider ServiceProvider) error {
 	hade.lock.Lock()
-	defer hade.lock.Unlock()
 	key := provider.Name()
 
 	hade.providers[key] = provider
+	hade.lock.Unlock()
 
 	//if provider is not defer
 	if provider.IsDefer() == false {
@@ -142,7 +142,7 @@ func (hade *HadeContainer) make(key string, params []interface{}, forceNew bool)
 		return ins,nil
 	}
 	
-	//容器中还未 实例化，则进行一次 实例化
+	//容器中还未实例化，则进行一次 实例化
 	inst, err := hade.newInstance(sp,nil)
 	if err != nil {
 		return nil,err
