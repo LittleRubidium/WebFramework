@@ -12,6 +12,6 @@ func (engine *Engine) Bind(provider framework.ServiceProvider) error {
 }
 
 //IsBand关键字凭证是否已经绑定服务提供者
-func (engine *Engine) IsBand(key string) bool {
-	return engine.container.IsBand(key)
+func (engine *Engine) IsBind(key string) bool {
+	return engine.container.IsBind(key)
 }

@@ -13,6 +13,7 @@ type HadeApp struct {
 	container framework.Container  //服务容器
 	baseFolder string //基础路径
 	appID string
+	configMap map[string]string
 }
 
 //实现版本
@@ -31,54 +32,84 @@ func (h HadeApp) BaseFolder() string {
 }
 
 // ConfigFolder  表示配置文件地址
-func (h HadeApp) ConfigFolder() string {
-	return filepath.Join(h.BaseFolder(), "config")
+func (a HadeApp) ConfigFolder() string {
+	if val, ok := a.configMap["config_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(), "config")
 }
 
 // LogFolder 表示日志存放地址
-func (h HadeApp) LogFolder() string {
-	return filepath.Join(h.StorageFolder(), "log")
+func (a HadeApp) LogFolder() string {
+	if val, ok := a.configMap["log_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.StorageFolder(), "log")
 }
 
-func (h HadeApp) HttpFolder() string {
-	return filepath.Join(h.BaseFolder(), "http")
+func (a HadeApp) HttpFolder() string {
+	if val, ok := a.configMap["http_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(), "http")
 }
 
-func (h HadeApp) ConsoleFolder() string {
-	return filepath.Join(h.BaseFolder(), "console")
+func (a HadeApp) ConsoleFolder() string {
+	if val, ok := a.configMap["console_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(), "console")
 }
 
-func (h HadeApp) StorageFolder() string {
-	return filepath.Join(h.BaseFolder(), "storage")
+func (a HadeApp) StorageFolder() string {
+	if val, ok := a.configMap["storage_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(), "storage")
 }
 
 // ProviderFolder 定义业务自己的服务提供者地址
-func (h HadeApp) ProviderFolder() string {
-	return filepath.Join(h.BaseFolder(), "provider")
+func (a HadeApp) ProviderFolder() string {
+	if val, ok := a.configMap["provider_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(), "provider")
 }
 
 // MiddlewareFolder 定义业务自己定义的中间件
-func (h HadeApp) MiddlewareFolder() string {
-	return filepath.Join(h.HttpFolder(), "middleware")
+func (a HadeApp) MiddlewareFolder() string {
+	if val, ok := a.configMap["middleware_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.HttpFolder(), "middleware")
 }
 
 // CommandFolder 定义业务定义的命令
-func (h HadeApp) CommandFolder() string {
-	return filepath.Join(h.ConsoleFolder(), "command")
+func (a HadeApp) CommandFolder() string {
+	if val, ok := a.configMap["command_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.ConsoleFolder(), "command")
 }
 
 // RuntimeFolder 定义业务的运行中间态信息
-func (h HadeApp) RuntimeFolder() string {
-	return filepath.Join(h.StorageFolder(), "runtime")
+func (a HadeApp) RuntimeFolder() string {
+	if val, ok := a.configMap["runtime_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.StorageFolder(), "runtime")
 }
 
 // TestFolder 定义测试需要的信息
-func (h HadeApp) TestFolder() string {
-	return filepath.Join(h.BaseFolder(), "test")
+func (a HadeApp) TestFolder() string {
+	if val, ok := a.configMap["test_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(), "test")
 }
 
-func (h HadeApp) AppID() string {
-	return h.appID
+func (a HadeApp) AppID() string {
+	return a.appID
 }
 
 func NewHadeApp(params []interface{}) (interface{}, error) {
@@ -90,5 +121,11 @@ func NewHadeApp(params []interface{}) (interface{}, error) {
 	container := params[0].(framework.Container)
 	baseFolder := params[1].(string)
 	return &HadeApp{baseFolder: baseFolder,container: container,appID: appId},nil
+}
+
+func (a *HadeApp) LoadAppConfig(kv map[string]string) {
+	for key, val := range kv {
+		a.configMap[key] = val
+	}
 }
 

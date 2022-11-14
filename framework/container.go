@@ -10,7 +10,7 @@ type Container interface {
 	//Bind绑定一个服务提供者，如果关键字凭证已经存在，会进行替换操作，返回error
 	Bind(provider ServiceProvider) error
 	//IsBand关键字凭证是否已经绑定服务提供者
-	IsBand(key string) bool
+	IsBind(key string) bool
 
 	//Make根据关键字凭证获取一个服务
 	Make(key string) (interface{},error)
@@ -78,7 +78,7 @@ func (hade *HadeContainer) Bind(provider ServiceProvider) error {
 	return nil
 }
 
-func (hade *HadeContainer) IsBand(key string) bool {
+func (hade *HadeContainer) IsBind(key string) bool {
 	return hade.findServiceProvider(key) != nil
 }
 
