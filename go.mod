@@ -21,17 +21,17 @@ require (
 require (
 	github.com/chenzhuoyu/base64x v0.0.0-20211019084208-fb5309c8db06 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/jonboulle/clockwork v0.3.0 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
-	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.9.3 // indirect
@@ -54,9 +54,12 @@ require (
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0
 	github.com/erikdubbelboer/gspt v0.0.0-20210805194459-ce36a5128377
+	github.com/fsnotify/fsnotify v1.4.9
 	github.com/google/uuid v1.1.2
 	github.com/inconshreveable/mousetrap v1.0.0
-	github.com/pkg/errors v0.8.1
+	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/mitchellh/mapstructure v1.4.1
+	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sevlyar/go-daemon v0.1.6
 	github.com/smartystreets/goconvey v1.6.4
