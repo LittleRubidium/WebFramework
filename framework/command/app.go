@@ -31,7 +31,7 @@ var appStartCommand = &cobra.Command{
 
 		server := &http.Server{
 			Handler: core,
-			Addr:    ":8888",
+			Addr: appAddress,
 		}
 		//开启一个协程处理请求，否则main函数会阻塞在这里
 		go server.ListenAndServe()
@@ -49,8 +49,10 @@ var appStartCommand = &cobra.Command{
 		return nil
 	},
 }
+var appAddress = ""
 
 func initAppCommand() *cobra.Command {
+	appStartCommand.Flags().StringVar(&appAddress,"address",":8888","设置app启动端口，默认为8888")
 	appCommand.AddCommand(appStartCommand)
 	return appCommand
 }

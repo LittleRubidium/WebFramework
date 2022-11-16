@@ -1,9 +1,7 @@
 package demo
 
-
 import (
 	demoService "github.com/gohade/hade/app/provider/demo"
-	"github.com/gohade/hade/framework/contract"
 	"github.com/gohade/hade/framework/gin"
 )
 
@@ -34,9 +32,7 @@ func NewDemoApi() *DemoApi {
 // @Success 200 array []UserDTO
 // @Router /demo/demo [get]
 func (api *DemoApi) Demo(c *gin.Context) {
-	configService := c.MustMake(contract.ConfigKey).(contract.Config)
-	password := configService.GetString("database.mysql.password")
-	c.JSON(200,password)
+	c.JSON(200, "this is demo")
 }
 
 // Demo godoc
@@ -47,10 +43,11 @@ func (api *DemoApi) Demo(c *gin.Context) {
 // @Success 200 array []UserDTO
 // @Router /demo/demo2 [get]
 func (api *DemoApi) Demo2(c *gin.Context) {
-	demoProvider := c.MustMake(demoService.DemoKey).(demoService.IService)
-	students := demoProvider.GetAllStudent()
-	usersDTO := StudentsToUserDTOs(students)
-	c.JSON(200, usersDTO)
+	//demoProvider := c.MustMake(demoService.DemoKey).(demoService.IService)
+	//students := demoProvider.GetAllStudent()
+	//usersDTO := StudentsToUserDTOs(students)
+	//c.JSON(200, usersDTO)
+	c.JSON(200, "this is demo for dev")
 }
 
 func (api *DemoApi) DemoPost(c *gin.Context) {

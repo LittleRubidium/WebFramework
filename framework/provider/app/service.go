@@ -123,6 +123,13 @@ func NewHadeApp(params []interface{}) (interface{}, error) {
 	return &HadeApp{baseFolder: baseFolder,container: container,appID: appId},nil
 }
 
+func (a *HadeApp) AppFolder() string {
+	if val, ok := a.configMap["app_folder"]; ok {
+		return val
+	}
+	return filepath.Join(a.BaseFolder(),"app")
+}
+
 func (a *HadeApp) LoadAppConfig(kv map[string]string) {
 	for key, val := range kv {
 		a.configMap[key] = val

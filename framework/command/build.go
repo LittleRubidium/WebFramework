@@ -43,7 +43,7 @@ var buildSelfCommand = &cobra.Command{
 			fmt.Println("--------------")
 			return err
 		}
-		fmt.Println("build success please run ./hade direct")
+		fmt.Println("编译hade成功")
 		return nil
 	},
 }

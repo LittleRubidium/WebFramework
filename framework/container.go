@@ -150,3 +150,13 @@ func (hade *HadeContainer) make(key string, params []interface{}, forceNew bool)
 	hade.instances[key] = inst
 	return inst, nil
 }
+
+//列出容器中所有服务提供者的字符串凭证
+func (hade *HadeContainer) NameList() []string {
+	var res []string
+	for _, provider := range hade.providers {
+		name := provider.Name()
+		res = append(res,name)
+	}
+	return res
+}

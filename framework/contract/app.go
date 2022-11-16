@@ -23,5 +23,6 @@ type App interface {
 	TestFolder() string
 	//AppID表示当前这个app的唯一id
 	AppID() string
+	AppFolder() string
 	LoadAppConfig(map[string]string)
 }
