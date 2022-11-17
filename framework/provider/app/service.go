@@ -51,14 +51,14 @@ func (a HadeApp) HttpFolder() string {
 	if val, ok := a.configMap["http_folder"]; ok {
 		return val
 	}
-	return filepath.Join(a.BaseFolder(), "http")
+	return filepath.Join(a.AppFolder(), "http")
 }
 
 func (a HadeApp) ConsoleFolder() string {
 	if val, ok := a.configMap["console_folder"]; ok {
 		return val
 	}
-	return filepath.Join(a.BaseFolder(), "console")
+	return filepath.Join(a.AppFolder(), "console")
 }
 
 func (a HadeApp) StorageFolder() string {
@@ -73,7 +73,7 @@ func (a HadeApp) ProviderFolder() string {
 	if val, ok := a.configMap["provider_folder"]; ok {
 		return val
 	}
-	return filepath.Join(a.BaseFolder(), "provider")
+	return filepath.Join(a.AppFolder(), "provider")
 }
 
 // MiddlewareFolder 定义业务自己定义的中间件

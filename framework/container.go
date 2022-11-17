@@ -130,7 +130,7 @@ func (hade *HadeContainer) make(key string, params []interface{}, forceNew bool)
 	//查询是否已经注册了这个服务，如果没有注册，则返回错误
 	sp := hade.findServiceProvider(key)
 	if sp == nil {
-		return nil,errors.New("contact " + key + "have not register")
+		return nil,errors.New("contact " + key + " have not register")
 	}
 	
 	if forceNew {
