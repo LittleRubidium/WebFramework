@@ -21,4 +21,5 @@ type Config interface {
 	GetStringMap(key string) map[string]interface{}
 	GetStringMapString(key string) map[string]string
 	GetStringMapStringSlice(key string) map[string][]string
+	Load(key string, val interface{}) error
 }
