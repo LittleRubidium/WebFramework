@@ -2292,7 +2292,7 @@ func main() {
   router := gin.Default()
   // Use predefined header gin.PlatformXXX
   router.TrustedPlatform = gin.PlatformGoogleAppEngine
-  // Or set your own trusted request header for another trusted proxy service
+  // Or set your own trusted request header for another trusted proxy services
   // Don't set it to any suspect request header, it's unsafe
   router.TrustedPlatform = "X-CDN-IP"
 

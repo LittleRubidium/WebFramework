@@ -120,7 +120,7 @@ For example, if you want `kubectl get [tab][tab]` to show a list of valid "nouns
 Some simplified code from `kubectl get` looks like:
 
 ```go
-validArgs []string = { "pod", "node", "service", "replicationcontroller" }
+validArgs []string = { "pod", "node", "services", "replicationcontroller" }
 
 cmd := &cobra.Command{
 	Use:     "get [(-o|--output=)json|yaml|template|...] (RESOURCE [NAME] | RESOURCE/NAME ...)",
@@ -138,7 +138,7 @@ Notice we put the `ValidArgs` field on the `get` sub-command. Doing so will give
 
 ```bash
 $ kubectl get [tab][tab]
-node   pod   replicationcontroller   service
+node   pod   replicationcontroller   services
 ```
 
 #### Aliases for nouns
