@@ -1,8 +1,8 @@
-package user
+package account
 
 import (
 	"fmt"
-	"github.com/gohade/hade/app/utils"
+	"github.com/gohade/hade/app/utils/jwt"
 	"github.com/gohade/hade/framework"
 	"github.com/gohade/hade/framework/contract"
 	"golang.org/x/crypto/bcrypt"
@@ -81,7 +81,7 @@ func (u *UserService) Login(username, password string) map[string]string {
 		resp["error_message"] = "密码错误"
 		return resp
 	}
-	token := utils.GetToken(userDB.Id)
+	token := jwt.GetToken(userDB.Id)
 
 	resp["token"] = token
 	resp["error_message"] = "success"

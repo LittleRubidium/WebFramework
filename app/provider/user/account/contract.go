@@ -1,4 +1,4 @@
-package user
+package account
 
 import (
     "encoding/json"
@@ -26,11 +26,11 @@ type Service interface {
 }
 
 type User struct {
-    Id int `json:"user_id" gorm:"column:id;primaryKey"`
-    Username string `json:"username" gorm:"column:username"`
-    Password string `json:"password" gorm:"column:password"`
-    Photo string `json:"photo" gorm:"column:photo"`
-    Rating int `gorm:"column:rating"`
+    Id int `gorm:"column:id;primaryKey" json:"id"`
+    Username string `gorm:"column:username" json:"username"`
+    Password string `gorm:"column:password"`
+    Photo string `gorm:"column:photo" json:"photo"`
+    Rating int `gorm:"column:rating" json:"rating"`
 }
 
 func (user *User) MarshalBinary() ([]byte, error) {

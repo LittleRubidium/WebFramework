@@ -1,1 +1,5 @@
-p, *, /demo/demo, *
+p, , /api/user/account/register/,
+p, ,  /api/user/account/token/,
+p, ,  /websocket/**,
+p, 127.0.0.1, /pk/receive/bot/move/,
+p, 127.0.0.1, /pk/start/game/,

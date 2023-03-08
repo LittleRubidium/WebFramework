@@ -19,6 +19,7 @@ require (
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.5.4 // indirect
+	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
@@ -75,9 +76,10 @@ require (
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
-	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
@@ -88,13 +90,16 @@ require (
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
+	github.com/casbin/casbin/v3 v3.0.0-beta.7
 	github.com/cpuguy83/go-md2man/v2 v2.0.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/erikdubbelboer/gspt v0.0.0-20210805194459-ce36a5128377
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-contrib/sse v0.1.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/inconshreveable/mousetrap v1.0.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/mitchellh/mapstructure v1.4.1
@@ -105,6 +110,8 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.8.1
 	github.com/swaggo/swag v1.7.3
+	github.com/tidwall/gjson v1.14.4
+	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
 	gorm.io/driver/clickhouse v0.2.1
 	gorm.io/driver/mysql v1.4.4
 	gorm.io/driver/postgres v1.4.5

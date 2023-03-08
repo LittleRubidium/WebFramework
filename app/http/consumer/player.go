@@ -1,4 +1,4 @@
-package util
+package consumer
 
 import "strconv"
 
@@ -22,11 +22,11 @@ func (player *Player) GetCells() []Cell {
 	dx, dy := []int{-1,0,1,0},[]int{0,1,0,-1}
 	x,y := player.Sx,player.Sy
 	step := 0
-	res = append(res,Cell{x,y})
+	res = append(res, Cell{x,y})
 	for _, d := range player.Steps {
 		x += dx[d]
 		y += dy[d]
-		res = append(res,Cell{x,y})
+		res = append(res, Cell{x,y})
 		step++
 		if !player.checkTailIncrease(step) {
 			res = res[:len(res) - 1]

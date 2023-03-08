@@ -1,12 +1,16 @@
-package util
+package consumer
 
 import (
-	"github.com/gohade/hade/app/http/consumer"
+	"fmt"
+	"github.com/gohade/hade/app/provider/record"
+	"github.com/gohade/hade/app/provider/user/account"
 	"github.com/gohade/hade/app/provider/user/bot"
 	"github.com/gohade/hade/app/utils/restTemplate"
+	"github.com/gohade/hade/framework/contract"
 	"math/rand"
 	"net/url"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -28,11 +32,11 @@ type Game struct {
 	g [][]int
 	lock sync.RWMutex
 	loser string
-	web *consumer.WebSocket
+	web *WebSocket
 	status string
 }
 
-func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int,botB *bot.Bot,web *consumer.WebSocket) *Game {
+func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int,botB *bot.Bot,web *WebSocket) *Game {
 	botIdA,botIdB := -1,-1
 	botCodeA,botCodeB := "",""
 	if botA != nil {
@@ -77,7 +81,7 @@ func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int,bo
 }
 
 func (g *Game) checkConnectivity(sx, sy, tx, ty int) bool {
-	if sx == tx &&  sy == ty {
+	if sx == tx && sy == ty {
 		return true
 	}
 	g.g[sx][sy] = 1
@@ -86,6 +90,7 @@ func (g *Game) checkConnectivity(sx, sy, tx, ty int) bool {
 		if x >= 0 && x < g.rows && y >= 0 && y < g.cols && g.g[x][y] == 0 {
 			if g.checkConnectivity(x,y,tx,ty) {
 				g.g[sx][sy] = 0
+				return true
 			}
 		}
 	}
@@ -172,7 +177,7 @@ func (g *Game) sendBotCode(player *Player) {
 	data.Set("input",g.getInput(player))
 	err := restTemplate.PostForObject(addBotUrl,data)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
 
@@ -206,10 +211,10 @@ func (g *Game) getMapString() string {
 
 func (g *Game) sendAllMessage(resp interface{}) {
 	if connA, ok := g.web.Users.Load(g.PlayerA.Id);ok {
-		connA.(*consumer.Connect).Conn.WriteJSON(resp)
+		connA.(*Connect).Conn.WriteJSON(resp)
 	}
 	if connB, ok := g.web.Users.Load(g.PlayerB.Id); ok {
-		connB.(*consumer.Connect).Conn.WriteJSON(resp)
+		connB.(*Connect).Conn.WriteJSON(resp)
 	}
 }
 
@@ -230,7 +235,42 @@ func (g *Game) sendResult() {
 		"event": "result",
 		"loser": g.loser,
 	}
+	g.saveToDatabase()
 	g.sendAllMessage(resp)
+}
+
+func (g *Game) saveToDatabase() {
+	ormService := g.web.MustMake(contract.ORMKey).(contract.ORMService)
+	db, err := ormService.GetDB()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	a,b := &account.User{},&account.User{}
+	db.Where("id=?",g.PlayerA.Id).First(a)
+	db.Where("id=?",g.PlayerB.Id).First(b)
+
+	if strings.Compare("A",g.loser) == 0 {
+		a.Rating -= 2
+		b.Rating += 5
+	}else if strings.Compare("B",g.loser) == 0{
+		a.Rating += 5
+		b.Rating -= 2
+	}
+	db.Where("id=?",a.Id).Updates(a)
+	db.Where("id=?",b.Id).Updates(b)
+	newRecord := record.NewRecord(g.PlayerA.Id,
+		g.PlayerA.Sx,
+		g.PlayerA.Sy,
+		g.PlayerB.Id,
+		g.PlayerB.Sx,
+		g.PlayerB.Sy,
+		g.PlayerA.GetStepString(),
+		g.PlayerB.GetStepString(),
+		g.getMapString(),
+		g.loser,
+		time.Now())
+	db.Table("record").Create(newRecord)
 }
 
 func (g *Game) checkValid(ca,cb []Cell) bool {
