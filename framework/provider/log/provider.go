@@ -10,16 +10,16 @@ import (
 )
 
 type HadeLogServiceProvider struct {
-	Driver string
-	Level contract.LogLevel
-	Formatter contract.Formatter
+	Driver     string
+	Level      contract.LogLevel
+	Formatter  contract.Formatter
 	CtxFielder contract.CtxFielder
-	Output io.Writer
+	Output     io.Writer
 }
 
 func (log *HadeLogServiceProvider) Register(c framework.Container) framework.NewInstance {
 	if log.Driver == "" {
-		tcs,err := c.Make(contract.ConfigKey)
+		tcs, err := c.Make(contract.ConfigKey)
 		if err != nil {
 			return services.NewHadeConsoleLog
 		}
@@ -61,7 +61,7 @@ func (log *HadeLogServiceProvider) Params(c framework.Container) []interface{} {
 			v := configService.GetString("log.formatter")
 			if v == "json" {
 				log.Formatter = formatter.JsonFormatter
-			}else if v == "text" {
+			} else if v == "text" {
 				log.Formatter = formatter.TextFormatter
 			}
 		}

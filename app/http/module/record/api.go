@@ -11,6 +11,6 @@ type RecordApi struct {
 func Register(r *gin.Engine) error {
 	recordApi := &RecordApi{}
 	r.Bind(&record.RecordProvider{})
-	r.GET("/api/record/getlist/",recordApi.GetList)
+	r.GET("/api/record/getlist/", recordApi.GetList)
 	return nil
 }

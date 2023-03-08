@@ -6,6 +6,7 @@ type RankListProvider struct {
 	framework.ServiceProvider
 	c framework.Container
 }
+
 func (sp *RankListProvider) Name() string {
 	return RanklistKey
 }

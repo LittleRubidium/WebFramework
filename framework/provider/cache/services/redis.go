@@ -34,7 +34,7 @@ func NewRedisCache(params []interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// 返回RedisCache实例
 	obj := &RedisCache{
 		container: container,

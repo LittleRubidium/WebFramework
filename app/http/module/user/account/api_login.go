@@ -18,6 +18,6 @@ func (api *AccountApi) Login(c *gin.Context) {
 		c.ISetStatus(400).IJson(resp)
 	}
 	userService := c.MustMake(account.UserKey).(account.Service)
-	resp = userService.Login(param.Username,param.Password)
+	resp = userService.Login(param.Username, param.Password)
 	c.ISetOkStatus().IJson(resp)
 }

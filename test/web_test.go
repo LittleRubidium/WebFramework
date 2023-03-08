@@ -1,9 +1,10 @@
 package test
+
 import (
-"flag"
-"html/template"
-"log"
-"net/http"
+	"flag"
+	"html/template"
+	"log"
+	"net/http"
 	"testing"
 
 	"github.com/gorilla/websocket"

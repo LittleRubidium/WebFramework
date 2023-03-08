@@ -9,13 +9,13 @@ import (
 
 type BotService struct {
 	container framework.Container
-	logger contract.Log
-	configer contract.Config
+	logger    contract.Log
+	configer  contract.Config
 }
 
 func (bot *BotService) Add(data map[string]interface{}) map[string]string {
 	resp := map[string]string{}
-	title,description,content := data["title"].(string),data["description"].(string),data["content"].(string)
+	title, description, content := data["title"].(string), data["description"].(string), data["content"].(string)
 	userId := data["userId"].(int)
 	if title == "" || len(title) == 0 {
 		resp["error_message"] = "标题不能为空"
@@ -52,7 +52,7 @@ func (bot *BotService) Add(data map[string]interface{}) map[string]string {
 		return resp
 	}
 	now := time.Now()
-	addBot := &Bot{UserId: userId,Title: title,Description: description,Content: content,CreateTime: now,ModifyTime: now}
+	addBot := &Bot{UserId: userId, Title: title, Description: description, Content: content, CreateTime: now, ModifyTime: now}
 	if err := db.Table("bot").Create(addBot).Error; err != nil {
 		resp["error_message"] = "创建失败，请稍后尝试"
 		return resp
@@ -68,7 +68,7 @@ func (bot *BotService) GetList(userId int) []Bot {
 	if err != nil {
 		return bots
 	}
-	if err := db.Table("bot").Where("user_id=?",userId).Find(&bots).Error; err != nil {
+	if err := db.Table("bot").Where("user_id=?", userId).Find(&bots).Error; err != nil {
 		return nil
 	}
 	return bots
@@ -92,8 +92,8 @@ func (bot *BotService) Remove(botId int) map[string]string {
 
 func (bot *BotService) Update(data map[string]interface{}) map[string]string {
 	resp := map[string]string{}
-	bot_id,user_id := data["bot_id"].(int),data["user_id"].(int)
-	title,description,content := data["title"].(string),data["description"].(string),data["content"].(string)
+	bot_id, user_id := data["bot_id"].(int), data["user_id"].(int)
+	title, description, content := data["title"].(string), data["description"].(string), data["content"].(string)
 	if title == "" || len(title) == 0 {
 		resp["error_message"] = "标题不能为空"
 		return resp
@@ -126,7 +126,7 @@ func (bot *BotService) Update(data map[string]interface{}) map[string]string {
 		return resp
 	}
 	botDB := &Bot{}
-	if db.Table("bot").Where("id=?",bot_id).First(botDB).Error == gorm.ErrRecordNotFound {
+	if db.Table("bot").Where("id=?", bot_id).First(botDB).Error == gorm.ErrRecordNotFound {
 		resp["error_message"] = "改Bot不存在"
 		return resp
 	}
@@ -136,7 +136,7 @@ func (bot *BotService) Update(data map[string]interface{}) map[string]string {
 	}
 
 	newBot := &Bot{Id: bot_id, UserId: user_id, Title: title, Description: description, Content: content, CreateTime: botDB.CreateTime, ModifyTime: time.Now()}
-	if err := db.Table("bot").Where("id=?",bot_id).Updates(newBot).Error; err != nil {
+	if err := db.Table("bot").Where("id=?", bot_id).Updates(newBot).Error; err != nil {
 		resp["error_message"] = "修改失败"
 		return resp
 	}
@@ -148,5 +148,5 @@ func NewBotService(params []interface{}) (interface{}, error) {
 	container := params[0].(framework.Container)
 	logger := container.MustMake(contract.LogKey).(contract.Log)
 	configer := container.MustMake(contract.ConfigKey).(contract.Config)
-	return &BotService{container: container,logger: logger,configer: configer},nil
+	return &BotService{container: container, logger: logger, configer: configer}, nil
 }

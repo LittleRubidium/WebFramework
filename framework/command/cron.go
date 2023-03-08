@@ -18,7 +18,7 @@ import (
 var cronDaemon = false
 
 func initCronCommand() *cobra.Command {
-	cronStartCommand.Flags().BoolVarP(&cronDaemon,"daemon","d",false,"start serve cron")
+	cronStartCommand.Flags().BoolVarP(&cronDaemon, "daemon", "d", false, "start serve cron")
 	cronCommand.AddCommand(cronStartCommand)
 	cronCommand.AddCommand(cronStateCommand)
 	cronCommand.AddCommand(cronStopCommand)
@@ -28,7 +28,7 @@ func initCronCommand() *cobra.Command {
 }
 
 var cronCommand = &cobra.Command{
-	Use: "cron",
+	Use:   "cron",
 	Short: "定时任务相关命令",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -39,14 +39,14 @@ var cronCommand = &cobra.Command{
 }
 
 var cronListCommand = &cobra.Command{
-	Use: "list",
+	Use:   "list",
 	Short: "列出所有的定时任务",
-	RunE: func(cmd *cobra.Command, args []string) error{
+	RunE: func(cmd *cobra.Command, args []string) error {
 		cronSpecs := cmd.Root().CronSpecs
 		ps := [][]string{}
 		for _, cronSpec := range cronSpecs {
-			line := []string{cronSpec.Type,cronSpec.Spec,cronSpec.Cmd.Use, cronSpec.Cmd.Short, cronSpec.ServiceName}
-			ps = append(ps,line)
+			line := []string{cronSpec.Type, cronSpec.Spec, cronSpec.Cmd.Use, cronSpec.Cmd.Short, cronSpec.ServiceName}
+			ps = append(ps, line)
 		}
 		util.PrettyPrint(ps)
 		return nil
@@ -64,9 +64,9 @@ var cronStartCommand = &cobra.Command{
 
 		//设置cron的日志地址和进程id地址
 		pidFolder := appService.RuntimeFolder()
-		serverPidFolder := filepath.Join(pidFolder,"cron.pid")
+		serverPidFolder := filepath.Join(pidFolder, "cron.pid")
 		logFolder := appService.LogFolder()
-		serverLogFile := filepath.Join(logFolder,"cron.log")
+		serverLogFile := filepath.Join(logFolder, "cron.log")
 		currentFolder := appService.BaseFolder()
 
 		if cronDaemon {
@@ -76,9 +76,9 @@ var cronStartCommand = &cobra.Command{
 				PidFilePerm: 0664,
 				LogFileName: serverLogFile,
 				LogFilePerm: 0640,
-				WorkDir: currentFolder,
-				Umask: 027,
-				Args: []string{"","cron","start","--daemon=true"},
+				WorkDir:     currentFolder,
+				Umask:       027,
+				Args:        []string{"", "cron", "start", "--daemon=true"},
 			}
 			//启动子进程，d不为空表示当前是父进程，d为空表示当前是子进程
 			d, err := cntxt.Reborn()
@@ -86,8 +86,8 @@ var cronStartCommand = &cobra.Command{
 				return err
 			}
 			if d != nil {
-				fmt.Println("cron serve started, pid: ",d.Pid)
-				fmt.Println("log file: ",serverLogFile)
+				fmt.Println("cron serve started, pid: ", d.Pid)
+				fmt.Println("log file: ", serverLogFile)
 				return nil
 			}
 
@@ -100,8 +100,8 @@ var cronStartCommand = &cobra.Command{
 		}
 		fmt.Println("start cron job")
 		content := strconv.Itoa(os.Getpid())
-		fmt.Println("[PID]",content)
-		err := ioutil.WriteFile(serverPidFolder,[]byte(content),0664)
+		fmt.Println("[PID]", content)
+		err := ioutil.WriteFile(serverPidFolder, []byte(content), 0664)
 		if err != nil {
 			return err
 		}
@@ -113,29 +113,29 @@ var cronStartCommand = &cobra.Command{
 }
 
 var cronRestartCommand = &cobra.Command{
-	Use: "restart",
+	Use:   "restart",
 	Short: "重启cron常驻进程",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := c.GetContainer()
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
-		serverPidFile := filepath.Join(appService.RuntimeFolder(),"cron pid")
+		serverPidFile := filepath.Join(appService.RuntimeFolder(), "cron pid")
 		content, err := ioutil.ReadFile(serverPidFile)
 		if err != nil {
 			return err
 		}
 		if content != nil && len(content) > 0 {
-			pid,err:= strconv.Atoi(string(content))
+			pid, err := strconv.Atoi(string(content))
 			if err != nil {
 				return err
 			}
 			if util.CheckProcessExist(pid) {
-				if err := syscall.Kill(pid,syscall.SIGTERM); err != nil {
+				if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
 					return err
 				}
 
 				//check process closed
-				for i := 0;i < 10; i++ {
+				for i := 0; i < 10; i++ {
 					if !util.CheckProcessExist(pid) {
 						break
 					}
@@ -145,7 +145,7 @@ var cronRestartCommand = &cobra.Command{
 			}
 		}
 		cronDaemon = true
-		return cronStartCommand.RunE(c,args)
+		return cronStartCommand.RunE(c, args)
 	},
 }
 

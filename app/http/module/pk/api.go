@@ -11,6 +11,6 @@ type PkApi struct {
 func Register(r *gin.Engine) {
 	pkApi := &PkApi{}
 	r.Bind(&pk.PkProvider{})
-	r.POST("/pk/start/game/",pkApi.StartGame)
-	r.POST("/pk/receive/bot/move/",pkApi.ReceiveBotMove)
+	r.POST("/pk/start/game/", pkApi.StartGame)
+	r.POST("/pk/receive/bot/move/", pkApi.ReceiveBotMove)
 }

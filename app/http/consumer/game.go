@@ -20,25 +20,25 @@ const (
 )
 
 var (
-	dx = [4]int{-1,0,1,0}
-	dy = [4]int{0,1,0,-1}
+	dx = [4]int{-1, 0, 1, 0}
+	dy = [4]int{0, 1, 0, -1}
 )
 
 type Game struct {
-	rows, cols int
-	PlayerA,PlayerB *Player
+	rows, cols           int
+	PlayerA, PlayerB     *Player
 	nextStepA, nextStepB int
-	innerWallsCount int
-	g [][]int
-	lock sync.RWMutex
-	loser string
-	web *WebSocket
-	status string
+	innerWallsCount      int
+	g                    [][]int
+	lock                 sync.RWMutex
+	loser                string
+	web                  *WebSocket
+	status               string
 }
 
-func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int,botB *bot.Bot,web *WebSocket) *Game {
-	botIdA,botIdB := -1,-1
-	botCodeA,botCodeB := "",""
+func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int, botB *bot.Bot, web *WebSocket) *Game {
+	botIdA, botIdB := -1, -1
+	botCodeA, botCodeB := "", ""
 	if botA != nil {
 		botIdA = botA.Id
 		botCodeA = botA.Content
@@ -48,23 +48,25 @@ func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int,bo
 		botCodeB = botB.Content
 	}
 	playerA := &Player{
-		Id: idA,
-		BotId: botIdA,
+		Id:      idA,
+		BotId:   botIdA,
 		BotCode: botCodeA,
-		Sx: rows - 2,
-		Sy: 1,
-		Steps: []int{},
+		Sx:      rows - 2,
+		Sy:      1,
+		Steps:   []int{},
 	}
 	playerB := &Player{
-		Id: idB,
-		BotId: botIdB,
+		Id:      idB,
+		BotId:   botIdB,
 		BotCode: botCodeB,
-		Sx: 1,
-		Sy: cols - 2,
-		Steps: []int{},
+		Sx:      1,
+		Sy:      cols - 2,
+		Steps:   []int{},
 	}
-	g := make([][]int,rows)
-	for i := 0;i < rows;i++ { g[i] = make([]int,cols)}
+	g := make([][]int, rows)
+	for i := 0; i < rows; i++ {
+		g[i] = make([]int, cols)
+	}
 	return &Game{
 		rows:            rows,
 		cols:            cols,
@@ -74,7 +76,7 @@ func NewGame(rows, cols, innerWallsCount int, idA int, botA *bot.Bot, idB int,bo
 		nextStepB:       -1,
 		innerWallsCount: innerWallsCount,
 		lock:            sync.RWMutex{},
-		g: 				 g,
+		g:               g,
 		web:             web,
 		status:          "playing",
 	}
@@ -85,10 +87,10 @@ func (g *Game) checkConnectivity(sx, sy, tx, ty int) bool {
 		return true
 	}
 	g.g[sx][sy] = 1
-	for i := 0;i < 4;i++ {
-		x,y := sx + dx[i],sy + dy[i]
+	for i := 0; i < 4; i++ {
+		x, y := sx+dx[i], sy+dy[i]
 		if x >= 0 && x < g.rows && y >= 0 && y < g.cols && g.g[x][y] == 0 {
-			if g.checkConnectivity(x,y,tx,ty) {
+			if g.checkConnectivity(x, y, tx, ty) {
 				g.g[sx][sy] = 0
 				return true
 			}
@@ -99,38 +101,38 @@ func (g *Game) checkConnectivity(sx, sy, tx, ty int) bool {
 }
 
 func (g *Game) drawMap() bool {
-	for i := 0;i < g.rows;i ++ {
-		for j := 0;j < g.cols;j ++ {
+	for i := 0; i < g.rows; i++ {
+		for j := 0; j < g.cols; j++ {
 			g.g[i][j] = 0
 		}
 	}
-	for r := 0;r < g.rows;r ++ {
+	for r := 0; r < g.rows; r++ {
 		g.g[r][0] = 1
-		g.g[r][g.cols - 1] = 1
+		g.g[r][g.cols-1] = 1
 	}
-	for c := 0;c < g.cols;c ++ {
-		g.g[0][c] = 1;
-		g.g[g.rows - 1][c] = 1
+	for c := 0; c < g.cols; c++ {
+		g.g[0][c] = 1
+		g.g[g.rows-1][c] = 1
 	}
-	for i := 0;i < g.innerWallsCount / 2;i ++ {
-		for j := 0;j < 1000;j ++ {
-			r, c := rand.Intn(g.rows),rand.Intn(g.cols)
-			if g.g[r][c] == 1 || g.g[g.rows - 1 - r][g.cols - 1 - c] == 1 {
+	for i := 0; i < g.innerWallsCount/2; i++ {
+		for j := 0; j < 1000; j++ {
+			r, c := rand.Intn(g.rows), rand.Intn(g.cols)
+			if g.g[r][c] == 1 || g.g[g.rows-1-r][g.cols-1-c] == 1 {
 				continue
 			}
-			if (r == g.rows - 2 && c == 1) || (r == 1 && c == g.cols - 2) {
+			if (r == g.rows-2 && c == 1) || (r == 1 && c == g.cols-2) {
 				continue
 			}
 			g.g[r][c] = 1
-			g.g[g.rows - 1 - r][g.cols - 1 - c] = 1
+			g.g[g.rows-1-r][g.cols-1-c] = 1
 			break
 		}
 	}
-	return g.checkConnectivity(g.rows - 2,1,1,g.cols - 2)
+	return g.checkConnectivity(g.rows-2, 1, 1, g.cols-2)
 }
 
 func (g *Game) CreateGameMap() {
-	for i := 0;i < 1000;i ++ {
+	for i := 0; i < 1000; i++ {
 		if g.drawMap() {
 			break
 		}
@@ -153,12 +155,12 @@ func (g *Game) nextStep() bool {
 	time.Sleep(time.Millisecond * 100)
 	g.sendBotCode(g.PlayerA)
 	g.sendBotCode(g.PlayerB)
-	for i := 0;i < 50;i++ {
+	for i := 0; i < 50; i++ {
 		time.Sleep(time.Millisecond * 100)
 		g.lock.RLock()
 		if g.nextStepA != -1 && g.nextStepB != -1 {
-			g.PlayerA.Steps = append(g.PlayerA.Steps,g.nextStepA)
-			g.PlayerB.Steps = append(g.PlayerB.Steps,g.nextStepB)
+			g.PlayerA.Steps = append(g.PlayerA.Steps, g.nextStepA)
+			g.PlayerB.Steps = append(g.PlayerB.Steps, g.nextStepB)
 			g.lock.RUnlock()
 			return true
 		}
@@ -172,21 +174,21 @@ func (g *Game) sendBotCode(player *Player) {
 		return
 	}
 	data := url.Values{}
-	data.Set("user_id",strconv.Itoa(player.Id))
-	data.Set("bot_code",player.BotCode)
-	data.Set("input",g.getInput(player))
-	err := restTemplate.PostForObject(addBotUrl,data)
+	data.Set("user_id", strconv.Itoa(player.Id))
+	data.Set("bot_code", player.BotCode)
+	data.Set("input", g.getInput(player))
+	err := restTemplate.PostForObject(addBotUrl, data)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
 func (g *Game) getInput(player *Player) string {
-	me,you := &Player{},&Player{}
+	me, you := &Player{}, &Player{}
 	if g.PlayerA.Id == player.Id {
 		me = g.PlayerA
 		you = g.PlayerB
-	}else {
+	} else {
 		me = g.PlayerB
 		you = g.PlayerA
 	}
@@ -201,8 +203,8 @@ func (g *Game) getInput(player *Player) string {
 
 func (g *Game) getMapString() string {
 	res := ""
-	for i := 0;i < g.rows;i++ {
-		for j := 0;j < g.cols;j++ {
+	for i := 0; i < g.rows; i++ {
+		for j := 0; j < g.cols; j++ {
 			res += strconv.Itoa(g.g[i][j])
 		}
 	}
@@ -210,7 +212,7 @@ func (g *Game) getMapString() string {
 }
 
 func (g *Game) sendAllMessage(resp interface{}) {
-	if connA, ok := g.web.Users.Load(g.PlayerA.Id);ok {
+	if connA, ok := g.web.Users.Load(g.PlayerA.Id); ok {
 		connA.(*Connect).Conn.WriteJSON(resp)
 	}
 	if connB, ok := g.web.Users.Load(g.PlayerB.Id); ok {
@@ -222,12 +224,12 @@ func (g *Game) sendMove() {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 	resp := map[string]interface{}{
-		"event": "move",
+		"event":       "move",
 		"a_direction": g.nextStepA,
 		"b_direction": g.nextStepB,
 	}
 	g.sendAllMessage(resp)
-	g.nextStepA,g.nextStepB = -1,-1
+	g.nextStepA, g.nextStepB = -1, -1
 }
 
 func (g *Game) sendResult() {
@@ -246,19 +248,19 @@ func (g *Game) saveToDatabase() {
 		fmt.Println(err)
 		return
 	}
-	a,b := &account.User{},&account.User{}
-	db.Where("id=?",g.PlayerA.Id).First(a)
-	db.Where("id=?",g.PlayerB.Id).First(b)
+	a, b := &account.User{}, &account.User{}
+	db.Where("id=?", g.PlayerA.Id).First(a)
+	db.Where("id=?", g.PlayerB.Id).First(b)
 
-	if strings.Compare("A",g.loser) == 0 {
+	if strings.Compare("A", g.loser) == 0 {
 		a.Rating -= 2
 		b.Rating += 5
-	}else if strings.Compare("B",g.loser) == 0{
+	} else if strings.Compare("B", g.loser) == 0 {
 		a.Rating += 5
 		b.Rating -= 2
 	}
-	db.Where("id=?",a.Id).Updates(a)
-	db.Where("id=?",b.Id).Updates(b)
+	db.Where("id=?", a.Id).Updates(a)
+	db.Where("id=?", b.Id).Updates(b)
 	newRecord := record.NewRecord(g.PlayerA.Id,
 		g.PlayerA.Sx,
 		g.PlayerA.Sy,
@@ -273,18 +275,18 @@ func (g *Game) saveToDatabase() {
 	db.Table("record").Create(newRecord)
 }
 
-func (g *Game) checkValid(ca,cb []Cell) bool {
+func (g *Game) checkValid(ca, cb []Cell) bool {
 	n := len(ca)
-	cell := ca[n - 1]
+	cell := ca[n-1]
 	if g.g[cell.X][cell.Y] == 1 {
 		return false
 	}
-	for i := 0;i < n - 1;i++ {
+	for i := 0; i < n-1; i++ {
 		if ca[i].X == cell.X && ca[i].Y == cell.Y {
 			return false
 		}
 	}
-	for i := 0;i < n;i++ {
+	for i := 0; i < n; i++ {
 		if cb[i].X == cell.X && cb[i].Y == cell.Y {
 			return false
 		}
@@ -293,38 +295,38 @@ func (g *Game) checkValid(ca,cb []Cell) bool {
 }
 
 func (g *Game) judge() {
-	ca,cb := g.PlayerA.GetCells(),g.PlayerB.GetCells()
-	va,vb := g.checkValid(ca,cb),g.checkValid(cb,ca)
+	ca, cb := g.PlayerA.GetCells(), g.PlayerB.GetCells()
+	va, vb := g.checkValid(ca, cb), g.checkValid(cb, ca)
 	if !va || !vb {
 		g.status = "finished"
 		if !va && !vb {
 			g.loser = "all"
-		}else if !va {
+		} else if !va {
 			g.loser = "A"
-		}else {
+		} else {
 			g.loser = "B"
 		}
 	}
 }
 
 func (g *Game) Play() {
-	for i := 0;i < 1000;i++ {
+	for i := 0; i < 1000; i++ {
 		if g.nextStep() {
 			g.judge()
 			if g.status == "playing" {
 				g.sendMove()
-			}else {
+			} else {
 				g.sendResult()
 				break
 			}
-		}else {
+		} else {
 			g.status = "finished"
 			g.lock.RLock()
 			if g.nextStepA == -1 && g.nextStepB == -1 {
 				g.loser = "all"
-			}else if g.nextStepA == -1 {
+			} else if g.nextStepA == -1 {
 				g.loser = "A"
-			}else {
+			} else {
 				g.loser = "B"
 			}
 			g.lock.RUnlock()

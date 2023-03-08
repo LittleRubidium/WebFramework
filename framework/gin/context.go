@@ -1226,9 +1226,9 @@ func (c *Context) Make(key string) (interface{}, error) {
 }
 
 func (c *Context) MustMake(key string) interface{} {
-	return  c.container.MustMake(key)
+	return c.container.MustMake(key)
 }
 
 func (c *Context) MakeNew(key string, params []interface{}) (interface{}, error) {
-	return c.container.MakeNew(key,params)
+	return c.container.MakeNew(key, params)
 }

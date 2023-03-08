@@ -12,4 +12,3 @@ func TestGetToken(t *testing.T) {
 	}
 	fmt.Println("success: " + token)
 }
-

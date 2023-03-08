@@ -10,10 +10,10 @@ import (
 
 //HadeApp
 type HadeApp struct {
-	container framework.Container  //服务容器
-	baseFolder string //基础路径
-	appID string
-	configMap map[string]string
+	container  framework.Container //服务容器
+	baseFolder string              //基础路径
+	appID      string
+	configMap  map[string]string
 }
 
 //实现版本
@@ -114,20 +114,20 @@ func (a HadeApp) AppID() string {
 
 func NewHadeApp(params []interface{}) (interface{}, error) {
 	if len(params) != 2 {
-		return nil,errors.New("param error")
+		return nil, errors.New("param error")
 	}
 	appId := uuid.New().String()
 	//有两个参数，一个是容器，一个是baseFolder
 	container := params[0].(framework.Container)
 	baseFolder := params[1].(string)
-	return &HadeApp{baseFolder: baseFolder,container: container,appID: appId},nil
+	return &HadeApp{baseFolder: baseFolder, container: container, appID: appId}, nil
 }
 
 func (a *HadeApp) AppFolder() string {
 	if val, ok := a.configMap["app_folder"]; ok {
 		return val
 	}
-	return filepath.Join(a.BaseFolder(),"app")
+	return filepath.Join(a.BaseFolder(), "app")
 }
 
 func (a *HadeApp) LoadAppConfig(kv map[string]string) {
@@ -135,4 +135,3 @@ func (a *HadeApp) LoadAppConfig(kv map[string]string) {
 		a.configMap[key] = val
 	}
 }
-

@@ -12,7 +12,7 @@ type HadeKernelService struct {
 //初始化web引擎服务实例
 func NewHadeKernelProvider(params []interface{}) (interface{}, error) {
 	httpEngine := params[0].(*gin.Engine)
-	return &HadeKernelService{engine: httpEngine},nil
+	return &HadeKernelService{engine: httpEngine}, nil
 }
 
 //返回web引擎

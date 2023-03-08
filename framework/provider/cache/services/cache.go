@@ -1,8 +1,8 @@
 package services
 
 import (
-"github.com/pkg/errors"
-"time"
+	"github.com/pkg/errors"
+	"time"
 )
 
 const (

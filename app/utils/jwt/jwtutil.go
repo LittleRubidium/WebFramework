@@ -18,12 +18,12 @@ func GetToken(userId int) string {
 		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
-			IssuedAt: time.Now().Unix(),
-			Issuer: "127.0.0.1",
-			Subject: "user token",
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    "127.0.0.1",
+			Subject:   "user token",
 		},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		return ""
@@ -32,18 +32,18 @@ func GetToken(userId int) string {
 }
 
 func GetUserIdFromToken(JWTToken string) int {
-	_,claims,err := parseJWT(JWTToken)
+	_, claims, err := parseJWT(JWTToken)
 	if err != nil {
 		return -1
 	}
 	return claims.UserId
 }
 
-func parseJWT(jwtToken string) (*jwt.Token,*Claims,error) {
+func parseJWT(jwtToken string) (*jwt.Token, *Claims, error) {
 	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(jwtToken,claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey,nil
+	token, err := jwt.ParseWithClaims(jwtToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
 	})
 
-	return token,claims,err
+	return token, claims, err
 }

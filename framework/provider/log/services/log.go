@@ -11,11 +11,11 @@ import (
 )
 
 type HadeLog struct {
-	level contract.LogLevel
-	formatter contract.Formatter
+	level      contract.LogLevel
+	formatter  contract.Formatter
 	ctxFielder contract.CtxFielder
-	output io.Writer
-	c framework.Container
+	output     io.Writer
+	c          framework.Container
 }
 
 //判断这个级别是否可以打印
@@ -24,7 +24,7 @@ func (log *HadeLog) IsLevelEnable(level contract.LogLevel) bool {
 }
 
 //打印日志核心函数
-func (log *HadeLog) logf(level contract.LogLevel, ctx context.Context,msg string, fields map[string]interface{}) error {
+func (log *HadeLog) logf(level contract.LogLevel, ctx context.Context, msg string, fields map[string]interface{}) error {
 	//先判断日志级别
 	if !log.IsLevelEnable(level) {
 		return nil
@@ -57,7 +57,7 @@ func (log *HadeLog) logf(level contract.LogLevel, ctx context.Context,msg string
 	if log.formatter == nil {
 		log.formatter = formatter.TextFormatter
 	}
-	ct, err := log.formatter(level,time.Now(),msg,fs)
+	ct, err := log.formatter(level, time.Now(), msg, fs)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,6 @@ func (log *HadeLog) logf(level contract.LogLevel, ctx context.Context,msg string
 		pkgLog.Panicln(ct)
 		return nil
 	}
-
 
 	log.output.Write(ct)
 	log.output.Write([]byte("\r\n"))

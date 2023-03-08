@@ -7,5 +7,5 @@ import (
 
 type WebSocketServer struct {
 	websocket websocket.Upgrader
-	users sync.Map
+	users     sync.Map
 }

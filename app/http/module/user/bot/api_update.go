@@ -7,10 +7,10 @@ import (
 )
 
 type updateParam struct {
-	BotId int `form:"bot_id"`
-	Title string `form:"title"`
+	BotId       int    `form:"bot_id"`
+	Title       string `form:"title"`
 	Description string `form:"description"`
-	Content string `form:"content"`
+	Content     string `form:"content"`
 }
 
 func (ba *BotApi) Update(c *gin.Context) {
@@ -23,11 +23,11 @@ func (ba *BotApi) Update(c *gin.Context) {
 		return
 	}
 	data := map[string]interface{}{
-		"bot_id": param.BotId,
-		"title":  param.Title,
+		"bot_id":      param.BotId,
+		"title":       param.Title,
 		"description": param.Description,
-		"content": param.Content,
-		"user_id":utils.GetUser(c).Id,
+		"content":     param.Content,
+		"user_id":     utils.GetUser(c).Id,
 	}
 	resp = botService.Update(data)
 	c.ISetOkStatus().IJson(resp)

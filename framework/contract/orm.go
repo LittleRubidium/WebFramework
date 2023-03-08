@@ -21,24 +21,24 @@ type DBOption func(container framework.Container, config *DBConfig) error
 type DBConfig struct {
 	//以下配置关于dsn
 	WriteTimeout string `yaml:"write_timeout"`
-	Loc string `yaml:"loc"`
-	Port int `yaml:"port"`
-	ReadTimeout string `yaml:"read_timeout"`
-	CharSet string `yaml:"charset"`
-	ParseTime bool `yaml:"parse_time"`
-	Protocol string `yaml:"protocol"`
-	Dsn string `yaml:"dsn"`
-	Database string `yaml:"database"`
-	Collation string `yaml:"collation"`
-	Timeout string `yaml:"timeout"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Driver string `yaml:"driver"`
-	Host string `yaml:"host"`
+	Loc          string `yaml:"loc"`
+	Port         int    `yaml:"port"`
+	ReadTimeout  string `yaml:"read_timeout"`
+	CharSet      string `yaml:"charset"`
+	ParseTime    bool   `yaml:"parse_time"`
+	Protocol     string `yaml:"protocol"`
+	Dsn          string `yaml:"dsn"`
+	Database     string `yaml:"database"`
+	Collation    string `yaml:"collation"`
+	Timeout      string `yaml:"timeout"`
+	Username     string `yaml:"username"`
+	Password     string `yaml:"password"`
+	Driver       string `yaml:"driver"`
+	Host         string `yaml:"host"`
 
 	//以下配置关于连接池
-	ConnMaxIdle int `yaml:"conn_max_idle"`
-	ConnMaxOpen int `yaml:"conn_max_open"`
+	ConnMaxIdle     int    `yaml:"conn_max_idle"`
+	ConnMaxOpen     int    `yaml:"conn_max_open"`
 	ConnMaxLifetime string `yaml:"conn_max_lifetime"`
 	ConnMaxIdletime string `yaml:"conn_max_idletime"`
 
@@ -65,17 +65,17 @@ func (conf *DBConfig) FormatDsn() (string, error) {
 		return "", err
 	}
 	driverConf := &mysql.Config{
-		User: conf.Username,
-		Passwd: conf.Password,
-		Net: conf.Protocol,
-		Addr: net.JoinHostPort(conf.Host,port),
-		DBName: conf.Database,
-		Collation: conf.Collation,
-		Loc: location,
-		Timeout: timeout,
-		ReadTimeout: readTimeout,
+		User:         conf.Username,
+		Passwd:       conf.Password,
+		Net:          conf.Protocol,
+		Addr:         net.JoinHostPort(conf.Host, port),
+		DBName:       conf.Database,
+		Collation:    conf.Collation,
+		Loc:          location,
+		Timeout:      timeout,
+		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
-		ParseTime: conf.ParseTime,
+		ParseTime:    conf.ParseTime,
 	}
 	return driverConf.FormatDSN(), nil
 }

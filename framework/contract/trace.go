@@ -18,10 +18,10 @@ const (
 )
 
 type TraceContext struct {
-	TraceID string
+	TraceID  string
 	ParentID string
-	SpanID string
-	CspanID string
+	SpanID   string
+	CspanID  string
 
 	Annotation map[string]string
 }
@@ -49,4 +49,3 @@ type Trace interface {
 	// Set Trace to Http
 	InjectHTTP(req *http.Request, trace *TraceContext) *http.Request
 }
-

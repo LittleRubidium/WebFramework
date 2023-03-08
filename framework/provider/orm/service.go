@@ -16,7 +16,7 @@ import (
 
 type HadeGorm struct {
 	container framework.Container
-	dbs map[string]*gorm.DB
+	dbs       map[string]*gorm.DB
 
 	lock *sync.RWMutex
 }
@@ -27,9 +27,9 @@ func NewHadeGorm(params []interface{}) (interface{}, error) {
 	lock := &sync.RWMutex{}
 	return &HadeGorm{
 		container: container,
-		dbs: dbs,
-		lock: lock,
-	},nil
+		dbs:       dbs,
+		lock:      lock,
+	}, nil
 }
 
 func (g *HadeGorm) GetDB(option ...contract.DBOption) (*gorm.DB, error) {
@@ -48,8 +48,8 @@ func (g *HadeGorm) GetDB(option ...contract.DBOption) (*gorm.DB, error) {
 
 	//option对opt进行修改
 	for _, opt := range option {
-		if err := opt(g.container,config); err != nil  {
-			return nil,err
+		if err := opt(g.container, config); err != nil {
+			return nil, err
 		}
 	}
 
@@ -83,7 +83,7 @@ func (g *HadeGorm) GetDB(option ...contract.DBOption) (*gorm.DB, error) {
 	case "sqlserver":
 		db, err = gorm.Open(sqlserver.Open(config.Dsn), config)
 	case "clickhouse":
-		db, err = gorm.Open(clickhouse.Open(config.Dsn),config)
+		db, err = gorm.Open(clickhouse.Open(config.Dsn), config)
 	}
 
 	sqlDB, err := db.DB()
@@ -100,25 +100,25 @@ func (g *HadeGorm) GetDB(option ...contract.DBOption) (*gorm.DB, error) {
 	if config.ConnMaxLifetime != "" {
 		lifeTime, err := time.ParseDuration(config.ConnMaxLifetime)
 		if err != nil {
-			logger.Error(context.Background(),"conn max life time error",map[string]interface{}{
+			logger.Error(context.Background(), "conn max life time error", map[string]interface{}{
 				"err": err,
 			})
-		}else {
+		} else {
 			sqlDB.SetConnMaxLifetime(lifeTime)
 		}
 	}
 	if config.ConnMaxIdletime != "" {
 		idleTime, err := time.ParseDuration(config.ConnMaxIdletime)
 		if err != nil {
-			logger.Error(context.Background(),"conn max idle time error",map[string]interface{}{
+			logger.Error(context.Background(), "conn max idle time error", map[string]interface{}{
 				"err": err,
 			})
-		}else {
+		} else {
 			sqlDB.SetConnMaxIdleTime(idleTime)
 		}
 	}
 	if err != nil {
 		g.dbs[config.Dsn] = db
 	}
-	return db,err
+	return db, err
 }

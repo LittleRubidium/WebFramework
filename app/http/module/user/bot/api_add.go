@@ -8,9 +8,9 @@ import (
 )
 
 type addBotParams struct {
-	Title string `form:"title"`
+	Title       string `form:"title"`
 	Description string `form:"description"`
-	Content string `form:"content"`
+	Content     string `form:"content"`
 }
 
 func (ba *BotApi) Add(c *gin.Context) {
@@ -25,10 +25,10 @@ func (ba *BotApi) Add(c *gin.Context) {
 	fmt.Println(param)
 	user := utils.GetUser(c)
 	addParams := map[string]interface{}{
-		"title": param.Title,
-		"description":param.Description,
-		"content": param.Content,
-		"userId":user.Id,
+		"title":       param.Title,
+		"description": param.Description,
+		"content":     param.Content,
+		"userId":      user.Id,
 	}
 	resp = botService.Add(addParams)
 	c.ISetOkStatus().IJson(resp)

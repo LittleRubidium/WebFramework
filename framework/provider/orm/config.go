@@ -13,7 +13,7 @@ func GetBaseConfig(c framework.Container) *contract.DBConfig {
 	config := &contract.DBConfig{}
 	err := configService.Load("database", config)
 	if err != nil {
-		logService.Error(context.Background(),"parse database config error",nil)
+		logService.Error(context.Background(), "parse database config error", nil)
 		return nil
 	}
 	return config

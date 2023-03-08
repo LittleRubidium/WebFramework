@@ -9,10 +9,10 @@ import (
 
 func TestJson(t *testing.T) {
 	m := map[string]interface{}{
-		"title": "bot",
+		"title":   "bot",
 		"user_id": 1,
 	}
-	j,_ := json.Marshal(m)
+	j, _ := json.Marshal(m)
 	fmt.Println(string(j))
 	p := gjson.ParseBytes(j)
 	fmt.Println(p)

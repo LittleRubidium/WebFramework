@@ -7,7 +7,7 @@ import (
 
 func PostForObject(URL string, data url.Values) error {
 	client := http.DefaultClient
-	_, err := client.PostForm(URL,data)
+	_, err := client.PostForm(URL, data)
 	if err != nil {
 		return err
 	}

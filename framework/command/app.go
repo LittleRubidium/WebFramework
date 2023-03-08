@@ -25,8 +25,8 @@ var appAddress = ""
 var appDaemon = false
 
 func initAppCommand() *cobra.Command {
-	appStartCommand.Flags().BoolVarP(&appDaemon,"daemon","d",false,"start app daemon")
-	appStartCommand.Flags().StringVar(&appAddress,"address","","设置app启动端口，默认为8888")
+	appStartCommand.Flags().BoolVarP(&appDaemon, "daemon", "d", false, "start app daemon")
+	appStartCommand.Flags().StringVar(&appAddress, "address", "", "设置app启动端口，默认为8888")
 
 	appCommand.AddCommand(appStartCommand)
 	appCommand.AddCommand(appRestartCommand)
@@ -36,7 +36,7 @@ func initAppCommand() *cobra.Command {
 }
 
 var appCommand = &cobra.Command{
-	Use: "app",
+	Use:   "app",
 	Short: "业务应用控制命令",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.Help()
@@ -56,7 +56,7 @@ func startAppServe(server *http.Server, c framework.Container) error {
 	if configServer.IsExist("app.close_wait") {
 		closeWait = configServer.GetInt("app.close_wait")
 	}
-	timeoutCtx, cancel := context.WithTimeout(context.Background(), time.Duration(closeWait) *time.Second)
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), time.Duration(closeWait)*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(timeoutCtx); err != nil {
@@ -67,7 +67,7 @@ func startAppServe(server *http.Server, c framework.Container) error {
 }
 
 var appStartCommand = &cobra.Command{
-	Use: "start",
+	Use:   "start",
 	Short: "启动一个服务",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		container := cmd.GetContainer()
@@ -78,11 +78,11 @@ var appStartCommand = &cobra.Command{
 			envServer := container.MustMake(contract.EnvKey).(contract.Env)
 			if envServer.Get("ADDRESS") != "" {
 				appAddress = envServer.Get("ADDRESS")
-			}else {
+			} else {
 				configService := container.MustMake(contract.ConfigKey).(contract.Config)
 				if configService.IsExist("app.address") {
 					appAddress = configService.GetString("app.address")
-				}else {
+				} else {
 					appAddress = ":8888"
 				}
 			}
@@ -90,25 +90,25 @@ var appStartCommand = &cobra.Command{
 		//创建一个Server服务
 		server := &http.Server{
 			Handler: core,
-			Addr: appAddress,
+			Addr:    appAddress,
 		}
 
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
 		pidFolder := appService.RuntimeFolder()
 		if !util.Exists(pidFolder) {
-			if err := os.MkdirAll(pidFolder,os.ModePerm); err != nil {
+			if err := os.MkdirAll(pidFolder, os.ModePerm); err != nil {
 				return err
 			}
 		}
-		serverPidFile := filepath.Join(pidFolder,"app.pid")
+		serverPidFile := filepath.Join(pidFolder, "app.pid")
 		logFolder := appService.LogFolder()
 		if !util.Exists(logFolder) {
-			if err := os.MkdirAll(logFolder,os.ModePerm); err != nil {
+			if err := os.MkdirAll(logFolder, os.ModePerm); err != nil {
 				return err
 			}
 		}
-		serverLogFile := filepath.Join(logFolder,"app.log")
+		serverLogFile := filepath.Join(logFolder, "app.log")
 		currentFolder := util.GetExecDirectory()
 		//daemon模式
 		if appDaemon {
@@ -128,14 +128,14 @@ var appStartCommand = &cobra.Command{
 				return err
 			}
 			if d != nil {
-				fmt.Println("app启动成功，pid:",d.Pid)
-				fmt.Println("日志文件:",serverLogFile)
+				fmt.Println("app启动成功，pid:", d.Pid)
+				fmt.Println("日志文件:", serverLogFile)
 				return nil
 			}
 			defer cntxt.Release()
 			fmt.Println("daemon started")
 			gspt.SetProcTitle("hade app")
-			if err := startAppServe(server,container); err != nil {
+			if err := startAppServe(server, container); err != nil {
 				fmt.Println(err)
 			}
 			return nil
@@ -143,13 +143,13 @@ var appStartCommand = &cobra.Command{
 
 		//非daemon模式，直接执行
 		content := strconv.Itoa(os.Getpid())
-		fmt.Println("[PID]",content)
-		err := ioutil.WriteFile(serverPidFile,[]byte(content),0664)
+		fmt.Println("[PID]", content)
+		err := ioutil.WriteFile(serverPidFile, []byte(content), 0664)
 		if err != nil {
 			return err
 		}
 		gspt.SetProcTitle("hade app")
-		fmt.Println("app serve url:",appAddress)
+		fmt.Println("app serve url:", appAddress)
 		if err := startAppServe(server, container); err != nil {
 			fmt.Println(err)
 		}
@@ -159,13 +159,13 @@ var appStartCommand = &cobra.Command{
 
 //重启一个服务
 var appRestartCommand = &cobra.Command{
-	Use: "restart",
+	Use:   "restart",
 	Short: "重新启动一个服务",
-	RunE: func(c *cobra.Command, args []string) error{
+	RunE: func(c *cobra.Command, args []string) error {
 		container := c.GetContainer()
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
-		serverPidFile := filepath.Join(appService.RuntimeFolder(),"app.pid")
+		serverPidFile := filepath.Join(appService.RuntimeFolder(), "app.pid")
 
 		content, err := ioutil.ReadFile(serverPidFile)
 		if err != nil {
@@ -178,7 +178,7 @@ var appRestartCommand = &cobra.Command{
 				return err
 			}
 			if util.CheckProcessExist(pid) {
-				if err := syscall.Kill(pid,syscall.SIGTERM); err != nil {
+				if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
 					return err
 				}
 
@@ -189,7 +189,7 @@ var appRestartCommand = &cobra.Command{
 					closeWait = configService.GetInt("app.close_wait")
 				}
 
-				for i := 0;i < closeWait * 2;i++ {
+				for i := 0; i < closeWait*2; i++ {
 					if !util.CheckProcessExist(pid) {
 						break
 					}
@@ -197,17 +197,17 @@ var appRestartCommand = &cobra.Command{
 				}
 
 				if util.CheckProcessExist(pid) {
-					fmt.Println("结束进程失败:" + strconv.Itoa(pid),"请查看原因")
+					fmt.Println("结束进程失败:"+strconv.Itoa(pid), "请查看原因")
 					return errors.New("结束进程失败")
 				}
-				if err := ioutil.WriteFile(serverPidFile,[]byte{},0664); err != nil {
+				if err := ioutil.WriteFile(serverPidFile, []byte{}, 0664); err != nil {
 					return err
 				}
 				fmt.Println("结束进程成功:" + strconv.Itoa(pid))
 			}
 		}
 		appDaemon = true
-		return appStartCommand.RunE(c,args)
+		return appStartCommand.RunE(c, args)
 	},
 }
 

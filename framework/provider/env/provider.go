@@ -24,7 +24,7 @@ func (e *HadeEnvProvider) IsDefer() bool {
 }
 
 func (e *HadeEnvProvider) Params(c framework.Container) []interface{} {
-	return  []interface{}{e.Folder}
+	return []interface{}{e.Folder}
 }
 
 func (e *HadeEnvProvider) Name() string {

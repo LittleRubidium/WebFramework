@@ -10,6 +10,7 @@ const (
 	//环境变量服务字符串凭证
 	EnvKey = "hade:env"
 )
+
 //环境变量服务
 type Env interface {
 	//AppEnv获取当前的环境

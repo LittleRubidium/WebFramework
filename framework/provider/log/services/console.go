@@ -10,7 +10,7 @@ type HadeConsoleLog struct {
 	HadeLog
 }
 
-func NewHadeConsoleLog(params []interface{}) (interface{},error) {
+func NewHadeConsoleLog(params []interface{}) (interface{}, error) {
 	c := params[0].(framework.Container)
 	level := params[1].(contract.LogLevel)
 	ctxFielder := params[2].(contract.CtxFielder)

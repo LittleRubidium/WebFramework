@@ -7,9 +7,9 @@ import (
 )
 
 type CronSpec struct {
-	Type string
-	Cmd *Command
-	Spec string
+	Type        string
+	Cmd         *Command
+	Spec        string
 	ServiceName string
 }
 
@@ -39,7 +39,7 @@ func (c *Command) AddCronCommand(spec string, cmd *Command) {
 	//增加说明信息
 	root.CronSpecs = append(root.CronSpecs, CronSpec{
 		Type: "normal-cron",
-		Cmd: cmd,
+		Cmd:  cmd,
 		Spec: spec,
 	})
 
@@ -60,7 +60,8 @@ func (c *Command) AddCronCommand(spec string, cmd *Command) {
 		}()
 
 		err := cronCmd.ExecuteContext(ctx)
-		if err != nil {}
+		if err != nil {
+		}
 		log.Println(err)
 	})
 

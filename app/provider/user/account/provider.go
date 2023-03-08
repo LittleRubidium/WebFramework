@@ -1,11 +1,14 @@
 package account
+
 import (
 	"github.com/gohade/hade/framework"
 )
+
 type UserProvider struct {
 	framework.ServiceProvider
 	c framework.Container
 }
+
 func (sp *UserProvider) Name() string {
 	return UserKey
 }

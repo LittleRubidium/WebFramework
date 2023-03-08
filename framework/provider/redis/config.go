@@ -14,9 +14,9 @@ func GetBaseConfig(c framework.Container) *contract.RedisConfig {
 	logService := c.MustMake(contract.LogKey).(contract.Log)
 	config := &contract.RedisConfig{Options: &redis.Options{}}
 	opt := WithConfigPath("redis")
-	err := opt(c,config)
+	err := opt(c, config)
 	if err != nil {
-		logService.Error(context.Background(),"parse cache conf err",nil)
+		logService.Error(context.Background(), "parse cache conf err", nil)
 		return nil
 	}
 	return config
@@ -39,14 +39,14 @@ func WithConfigPath(configPath string) contract.RedisOption {
 			}
 			config.DB = t
 		}
-		if username,ok := conf["username"]; ok {
+		if username, ok := conf["username"]; ok {
 			config.Username = username
 		}
-		if password, ok :=  conf["password"]; ok {
+		if password, ok := conf["password"]; ok {
 			config.Password = password
 		}
 		if timeout, ok := conf["timeout"]; ok {
-			t, err := time.ParseDuration(timeout);
+			t, err := time.ParseDuration(timeout)
 			if err != nil {
 				return err
 			}
@@ -54,7 +54,7 @@ func WithConfigPath(configPath string) contract.RedisOption {
 		}
 
 		if timeout, ok := conf["read_timeout"]; ok {
-			t,err := time.ParseDuration(timeout)
+			t, err := time.ParseDuration(timeout)
 			if err != nil {
 				return err
 			}

@@ -21,9 +21,9 @@ func initProviderCommand() *cobra.Command {
 }
 
 var providerCommand = &cobra.Command{
-	Use: "provider",
+	Use:   "provider",
 	Short: "服务提供相关命令",
-	RunE: func(c *cobra.Command, args []string) error{
+	RunE: func(c *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			c.Help()
 		}
@@ -32,9 +32,9 @@ var providerCommand = &cobra.Command{
 }
 
 var providerListCommand = &cobra.Command{
-	Use: "list",
+	Use:   "list",
 	Short: "列出容器内的所有服务",
-	RunE: func(c *cobra.Command, args []string) error{
+	RunE: func(c *cobra.Command, args []string) error {
 		container := c.GetContainer()
 		hadeContainer := container.(*framework.HadeContainer)
 		//获取字符串凭证

@@ -14,9 +14,9 @@ func Register(r *gin.Engine) error {
 		CheckOrigin: func(r *http.Request) bool {
 			return true
 		},
-	},Users: &sync.Map{},Container:r.GetContainer()}
+	}, Users: &sync.Map{}, Container: r.GetContainer()}
 
-	r.GET("/websocket/:token",Web.CreateConn)
+	r.GET("/websocket/:token", Web.CreateConn)
 
 	return nil
 }

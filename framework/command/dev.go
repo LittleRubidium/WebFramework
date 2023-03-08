@@ -19,21 +19,21 @@ import (
 )
 
 type devConfig struct {
-	Port string //调试模式最终监听的端口，默认为8070
+	Port    string   //调试模式最终监听的端口，默认为8070
 	Backend struct { //后端调试模式配置
-		RefreshTime int //调试模式后端更新时间，默认1s
-		Port string //后端监听端口，默认8072
+		RefreshTime   int    //调试模式后端更新时间，默认1s
+		Port          string //后端监听端口，默认8072
 		MonitorFolder string //监听文件夹，默认为AppFolder
 	}
-	Frontend struct{ //前端调试模式
+	Frontend struct { //前端调试模式
 		Port string //前端启动端口，默认为8071
 	}
 }
 
 type Proxy struct {
-	devConfig *devConfig
+	devConfig   *devConfig
 	proxyServer *http.Server
-	backendPid int
+	backendPid  int
 	frontendPid int
 }
 
@@ -62,7 +62,7 @@ func initDevConfig(c framework.Container) *devConfig {
 		appService := c.MustMake(contract.AppKey).(contract.App)
 		devConfig.Backend.MonitorFolder = appService.AppFolder()
 	}
-	
+
 	if configer.IsExist("app.dev.frontend.port") {
 		devConfig.Frontend.Port = configer.GetString("app.dev.frontend.port")
 	}
@@ -97,7 +97,7 @@ func (p *Proxy) newProxyReverseProxy(frontend, backend *url.URL) *httputil.Rever
 		if req.URL.Path == "/" || req.URL.Path == "/app.js" {
 			req.URL.Scheme = frontend.Scheme
 			req.URL.Host = frontend.Host
-		}else {
+		} else {
 			req.URL.Scheme = backend.Scheme
 			req.URL.Host = backend.Host
 		}
@@ -114,8 +114,8 @@ func (p *Proxy) newProxyReverseProxy(frontend, backend *url.URL) *httputil.Rever
 			return nil
 		},
 		ErrorHandler: func(writer http.ResponseWriter, request *http.Request, err error) {
-			if errors.Is(err,NotFoundErr) {
-				httputil.NewSingleHostReverseProxy(frontend).ServeHTTP(writer,request)
+			if errors.Is(err, NotFoundErr) {
+				httputil.NewSingleHostReverseProxy(frontend).ServeHTTP(writer, request)
 			}
 		},
 	}
@@ -123,7 +123,7 @@ func (p *Proxy) newProxyReverseProxy(frontend, backend *url.URL) *httputil.Rever
 
 func (p *Proxy) rebuildBackend() error {
 	//重新编译hade
-	cmdBuild := exec.Command("./hade","build","backend")
+	cmdBuild := exec.Command("./hade", "build", "backend")
 	cmdBuild.Stdout = os.Stdout
 	cmdBuild.Stderr = os.Stderr
 	if err := cmdBuild.Start(); err == nil {
@@ -138,7 +138,7 @@ func (p *Proxy) rebuildBackend() error {
 func (p *Proxy) restartBackend() error {
 	//杀死之前的进程
 	if p.backendPid != 0 {
-		syscall.Kill(p.backendPid,syscall.SIGKILL)
+		syscall.Kill(p.backendPid, syscall.SIGKILL)
 		p.backendPid = 0
 	}
 
@@ -146,16 +146,16 @@ func (p *Proxy) restartBackend() error {
 	port := p.devConfig.Backend.Port
 	hadeAddress := fmt.Sprintf(":" + port)
 	//使用命令行启动后端进程
-	cmd := exec.Command("./hade","app","start","--address=" + hadeAddress)
-	cmd.Stdout = os.NewFile(0,os.DevNull)
+	cmd := exec.Command("./hade", "app", "start", "--address="+hadeAddress)
+	cmd.Stdout = os.NewFile(0, os.DevNull)
 	cmd.Stderr = os.Stderr
-	fmt.Println("启动后端服务: ","http://127.0.0.1:" + port)
+	fmt.Println("启动后端服务: ", "http://127.0.0.1:"+port)
 	err := cmd.Start()
 	if err != nil {
 		fmt.Println(err)
 	}
 	p.backendPid = cmd.Process.Pid
-	fmt.Println("后端服务pid: ",p.backendPid)
+	fmt.Println("后端服务pid: ", p.backendPid)
 	return nil
 }
 
@@ -173,24 +173,23 @@ func (p *Proxy) restartFrontend() error {
 	if err != nil {
 		return err
 	}
-	cmd := exec.Command(path,"run","dev")
+	cmd := exec.Command(path, "run", "dev")
 	cmd.Env = os.Environ()
-	cmd.Env = append(cmd.Env,fmt.Sprintf("%s%s","PORT=",port))
-	cmd.Stdout = os.NewFile(0,os.DevNull)
+	cmd.Env = append(cmd.Env, fmt.Sprintf("%s%s", "PORT=", port))
+	cmd.Stdout = os.NewFile(0, os.DevNull)
 	cmd.Stderr = os.Stderr
 
 	//因为npm run serve 是控制台挂起模式，所以这里使用go routine
 	err = cmd.Start()
-	fmt.Println("启动前端服务: ","http://127.0.0.1:" + port)
+	fmt.Println("启动前端服务: ", "http://127.0.0.1:"+port)
 	if err != nil {
 		fmt.Println(err)
 	}
 	p.frontendPid = cmd.Process.Pid
-	fmt.Println("前端服务pid:",p.frontendPid)
+	fmt.Println("前端服务pid:", p.frontendPid)
 
 	return nil
 }
-
 
 func (p *Proxy) startProxy(startFrontend, startBackend bool) error {
 	var backendURL, frontendURL *url.URL

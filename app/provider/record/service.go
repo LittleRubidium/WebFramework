@@ -10,22 +10,22 @@ import (
 
 type RecordService struct {
 	container framework.Container
-	logger contract.Log
-	configer contract.Config
+	logger    contract.Log
+	configer  contract.Config
 }
 
-func NewRecord(aId,aSx,aSy,bId,bSx,bSy int,aSteps,bSteps,gamemap,loser string,createTime time.Time) *Record{
+func NewRecord(aId, aSx, aSy, bId, bSx, bSy int, aSteps, bSteps, gamemap, loser string, createTime time.Time) *Record {
 	return &Record{
-		AId: aId,
-		ASx: aSx,
-		ASy: aSy,
-		BId: bId,
-		BSx: bSx,
-		BSy: bSy,
-		ASteps: aSteps,
-		BSteps: bSteps,
-		Map: gamemap,
-		Loser: loser,
+		AId:        aId,
+		ASx:        aSx,
+		ASy:        aSy,
+		BId:        bId,
+		BSx:        bSx,
+		BSy:        bSy,
+		ASteps:     aSteps,
+		BSteps:     bSteps,
+		Map:        gamemap,
+		Loser:      loser,
 		CreateTime: createTime,
 	}
 }
@@ -43,24 +43,24 @@ func (record *RecordService) GetList(page int) map[string]interface{} {
 	}
 	var items []map[string]interface{}
 	for _, record := range records {
-		userA,userB := &account.User{},&account.User{}
-		db.Where("id=?",record.AId).First(userA)
-		db.Where("id=?",record.BId).First(userB)
+		userA, userB := &account.User{}, &account.User{}
+		db.Where("id=?", record.AId).First(userA)
+		db.Where("id=?", record.BId).First(userB)
 		item := map[string]interface{}{
-			"a_photo": userA.Photo,
+			"a_photo":    userA.Photo,
 			"a_username": userA.Username,
-			"b_photo": userB.Photo,
+			"b_photo":    userB.Photo,
 			"b_username": userB.Username,
 		}
 		result := "平局"
-		if strings.Compare("A",record.Loser) == 0 {
+		if strings.Compare("A", record.Loser) == 0 {
 			result = "B胜"
-		}else if strings.Compare("B",record.Loser) == 0 {
+		} else if strings.Compare("B", record.Loser) == 0 {
 			result = "A胜"
 		}
 		item["result"] = result
 		item["record"] = record
-		items = append(items,item)
+		items = append(items, item)
 	}
 	var total int64
 	db.Table("record").Model(&Record{}).Count(&total)
@@ -73,5 +73,5 @@ func NewRecordService(params []interface{}) (interface{}, error) {
 	container := params[0].(framework.Container)
 	logger := container.MustMake(contract.LogKey).(contract.Log)
 	configer := container.MustMake(contract.ConfigKey).(contract.Config)
-	return &RecordService{container: container, logger: logger,configer: configer}, nil
+	return &RecordService{container: container, logger: logger, configer: configer}, nil
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func GetExecDirectory() string {
-	file,err := os.Getwd()
+	file, err := os.Getwd()
 	if err == nil {
 		return file + "/"
 	}

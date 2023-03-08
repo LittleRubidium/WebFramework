@@ -8,6 +8,7 @@ import (
 	"github.com/gohade/hade/framework/contract"
 	"github.com/gohade/hade/framework/gin"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -49,7 +50,9 @@ func (a *BasicAuthorizer) CheckTokenValid(c *gin.Context) bool {
 	token = token[7:]
 
 	userId := jwt.GetUserIdFromToken(token)
-
+	if _, ok := c.Get(strconv.Itoa(userId)); ok {
+		return true
+	}
 	ormService := c.MustMake(contract.ORMKey).(contract.ORMService)
 	db, err := ormService.GetDB()
 	if err != nil {
@@ -60,6 +63,7 @@ func (a *BasicAuthorizer) CheckTokenValid(c *gin.Context) bool {
 		return false
 	}
 	userDB.Password = ""
+	c.Set(strconv.Itoa(userDB.Id), userDB)
 	return true
 }
 

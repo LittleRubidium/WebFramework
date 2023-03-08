@@ -7,8 +7,8 @@ import (
 )
 
 type registerParam struct {
-	Username string `form:"username" binding:"required" json:"username"`
-	Password string `form:"password" binding:"required" json:"password"`
+	Username          string `form:"username" binding:"required" json:"username"`
+	Password          string `form:"password" binding:"required" json:"password"`
 	ConfirmedPassword string `form:"confirmedPassword" binding:"required" json:"confirmedPassword"`
 }
 

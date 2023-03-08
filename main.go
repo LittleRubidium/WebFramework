@@ -28,7 +28,7 @@ func main() {
 	container.Bind(&redis.RedisProvider{})
 	container.Bind(&cache.HadeCacheProvider{})
 
-	if engine,err := http.NewHttpEngine(container); err == nil {
+	if engine, err := http.NewHttpEngine(container); err == nil {
 		container.Bind(&kernel.HadeKernelProvider{HttpEngine: engine})
 	}
 

@@ -22,5 +22,5 @@ type RedisService interface {
 
 //用来唯一标识一个redisConfig配置
 func (conf *RedisConfig) UniqKey() string {
-	return fmt.Sprintf("%v_%v_%v_%v",conf.Addr,conf.DB,conf.Username,conf.Network)
+	return fmt.Sprintf("%v_%v_%v_%v", conf.Addr, conf.DB, conf.Username, conf.Network)
 }

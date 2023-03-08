@@ -9,8 +9,8 @@ import (
 
 type HadeRedis struct {
 	container framework.Container
-	clients map[string]*redis.Client
-	
+	clients   map[string]*redis.Client
+
 	lock *sync.RWMutex
 }
 
@@ -20,8 +20,8 @@ func NewHadeRedis(params []interface{}) (interface{}, error) {
 	lock := &sync.RWMutex{}
 	return &HadeRedis{
 		container: container,
-		clients: clients,
-		lock: lock,
+		clients:   clients,
+		lock:      lock,
 	}, nil
 }
 
@@ -29,8 +29,8 @@ func (r *HadeRedis) GetClient(option ...contract.RedisOption) (*redis.Client, er
 	//读取默认配置
 	config := GetBaseConfig(r.container)
 	//option对opt进行修改
-	for _,opt := range option {
-		if err := opt(r.container,config); err != nil {
+	for _, opt := range option {
+		if err := opt(r.container, config); err != nil {
 			return nil, err
 		}
 	}
@@ -43,7 +43,7 @@ func (r *HadeRedis) GetClient(option ...contract.RedisOption) (*redis.Client, er
 	r.lock.RLock()
 	if db, ok := r.clients[key]; ok {
 		r.lock.RUnlock()
-		return db,nil
+		return db, nil
 	}
 	r.lock.RUnlock()
 	r.lock.Lock()

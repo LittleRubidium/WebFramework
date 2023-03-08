@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//文本输出格式 
+//文本输出格式
 func TextFormatter(level contract.LogLevel, t time.Time, msg string, fields map[string]interface{}) ([]byte, error) {
 	bf := bytes.NewBuffer([]byte{})
 	Separator := "\t"
