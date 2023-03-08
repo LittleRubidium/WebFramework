@@ -7,6 +7,7 @@ import (
 	"github.com/gohade/hade/app/provider/user/bot"
 	"github.com/gohade/hade/app/utils/restTemplate"
 	"github.com/gohade/hade/framework/contract"
+	"log"
 	"math/rand"
 	"net/url"
 	"strconv"
@@ -310,6 +311,11 @@ func (g *Game) judge() {
 }
 
 func (g *Game) Play() {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Print(err)
+		}
+	}()
 	for i := 0; i < 1000; i++ {
 		if g.nextStep() {
 			g.judge()

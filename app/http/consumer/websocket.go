@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/tidwall/gjson"
 	"gorm.io/gorm"
+	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -41,15 +42,19 @@ func (web *WebSocket) CreateConn(c *gin.Context) {
 	fmt.Println("create conn")
 	w, r := c.Writer, c.Request
 	token := c.Param("token")
-	ormService := c.MustMake(contract.ORMKey).(contract.ORMService)
-	db, err := ormService.GetDB()
-	if err != nil {
-		return
-	}
 	userId := jwt.GetUserIdFromToken(token)
 	userDB := &account.User{}
-	if db.Where("id=?", userId).First(userDB).Error == gorm.ErrRecordNotFound {
-		return
+	tUser, ok := c.Get(strconv.Itoa(userId))
+	userDB = tUser.(*account.User)
+	if !ok {
+		ormService := c.MustMake(contract.ORMKey).(contract.ORMService)
+		db, err := ormService.GetDB()
+		if err != nil {
+			return
+		}
+		if db.Where("id=?", userId).First(userDB).Error == gorm.ErrRecordNotFound {
+			return
+		}
 	}
 	conn, err := web.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -115,7 +120,12 @@ func (web *WebSocket) StartGame(aId, aBotId, bId, bBotId int) {
 }
 
 func (conn *Connect) OnMessage() {
-	defer conn.OnClose()
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println(err)
+		}
+		conn.OnClose()
+	}()
 	for {
 		_, message, err := conn.Conn.ReadMessage()
 		if err != nil {

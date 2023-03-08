@@ -1,11 +1,9 @@
 package console
 
 import (
-	"github.com/gohade/hade/app/console/command/demo"
 	"github.com/gohade/hade/framework"
 	"github.com/gohade/hade/framework/cobra"
 	"github.com/gohade/hade/framework/command"
-	"time"
 )
 
 func RunCommand(container framework.Container) error {
@@ -30,12 +28,7 @@ func RunCommand(container framework.Container) error {
 	//绑定框架命令
 	command.AddKernelCommands(rootCmd)
 	//绑定业务命令
-	AddAppCommand(rootCmd)
 
 	//执行RootCommand
 	return rootCmd.Execute()
-}
-
-func AddAppCommand(rootCmd *cobra.Command) {
-	rootCmd.AddDistributedCronCommand("foo_func_for_test", "*/5 * * * * *", demo.FooCommand, 2*time.Second)
 }
