@@ -11,8 +11,11 @@ type AccountApi struct {
 func Register(r *gin.Engine) error {
 	api := &AccountApi{}
 	r.Bind(&account.UserProvider{})
-	r.POST("/api/user/account/token/", api.Login)
-	r.POST("/api/user/account/register/", api.Register)
-	r.GET("/api/user/account/info/", api.Info)
+	account := r.Group("api/user/account")
+	{
+		account.POST("/token/", api.Login)
+		account.POST("/register/", api.Register)
+		account.POST("/info/", api.Info)
+	}
 	return nil
 }

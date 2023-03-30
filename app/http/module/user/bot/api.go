@@ -11,9 +11,18 @@ type BotApi struct {
 func Register(r *gin.Engine) error {
 	r.Bind(&bot.BotProvider{})
 	bot := &BotApi{}
-	r.POST("/api/user/bot/add/", bot.Add)
-	r.GET("/api/user/bot/getlist/", bot.GetList)
-	r.POST("/api/user/bot/remove/", bot.Remove)
-	r.POST("/api/user/bot/update/", bot.Update)
+	api := r.Group("/api")
+	{
+		user := api.Group("/user")
+		{
+			rbot := user.Group("/bot")
+			{
+				rbot.POST("/", bot.Add)
+				rbot.GET("/", bot.GetList)
+				rbot.DELETE("/", bot.Remove)
+				rbot.PUT("/", bot.Update)
+			}
+		}
+	}
 	return nil
 }

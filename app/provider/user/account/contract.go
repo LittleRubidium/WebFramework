@@ -33,6 +33,10 @@ type User struct {
 	Rating   int    `gorm:"column:rating" json:"rating"`
 }
 
+func (u *User) TableName() string {
+	return "user"
+}
+
 func (user *User) MarshalBinary() ([]byte, error) {
 	return json.Marshal(user)
 }

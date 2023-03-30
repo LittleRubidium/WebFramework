@@ -11,6 +11,6 @@ type RankApi struct {
 func Register(r *gin.Engine) error {
 	rankApi := &RankApi{}
 	r.Bind(&ranklist.RankListProvider{})
-	r.GET("/api/ranklist/getlist/", rankApi.GetRankList)
+	r.GET("/api/ranklist/", rankApi.GetRankList)
 	return nil
 }

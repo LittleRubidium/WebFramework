@@ -5,11 +5,14 @@ import (
 	"net/url"
 )
 
-func PostForObject(URL string, data url.Values) error {
+func PostForObject(URL string, data url.Values) (err error) {
 	client := http.DefaultClient
-	_, err := client.PostForm(URL, data)
-	if err != nil {
-		return err
-	}
-	return nil
+	_, err = client.PostForm(URL, data)
+	return
+}
+
+func DeleteForObject(URL string) (err error) {
+	req, _ := http.NewRequest(http.MethodDelete, URL, nil)
+	_, err = http.DefaultClient.Do(req)
+	return
 }

@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	addPlayerUrl    = "http://127.0.0.1:3001/player/add/"
-	removePlayerUrl = "http://127.0.0.1:3001/player/remove/"
+	addPlayerUrl    = "http://127.0.0.1:3001/player/"
+	removePlayerUrl = "http://127.0.0.1:3001/player/"
 )
 
 type WebSocket struct {
@@ -45,7 +45,6 @@ func (web *WebSocket) CreateConn(c *gin.Context) {
 	userId := jwt.GetUserIdFromToken(token)
 	userDB := &account.User{}
 	tUser, ok := c.Get(strconv.Itoa(userId))
-	userDB = tUser.(*account.User)
 	if !ok {
 		ormService := c.MustMake(contract.ORMKey).(contract.ORMService)
 		db, err := ormService.GetDB()
@@ -55,6 +54,8 @@ func (web *WebSocket) CreateConn(c *gin.Context) {
 		if db.Where("id=?", userId).First(userDB).Error == gorm.ErrRecordNotFound {
 			return
 		}
+	} else {
+		userDB = tUser.(*account.User)
 	}
 	conn, err := web.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -160,9 +161,8 @@ func (conn *Connect) startMatching(botId int) {
 }
 
 func (conn *Connect) stopMatching() {
-	data := url.Values{}
-	data.Set("user_id", strconv.Itoa(conn.User.Id))
-	restTemplate.PostForObject(removePlayerUrl, data)
+	userId := strconv.Itoa(conn.User.Id)
+	restTemplate.DeleteForObject(removePlayerUrl + userId + "/")
 }
 func (conn *Connect) move(direction int) {
 	if conn.Game.PlayerA.Id == conn.User.Id {

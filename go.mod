@@ -1,6 +1,6 @@
 module github.com/gohade/hade
 
-go 1.17
+go 1.18
 
 require (
 	github.com/bytedance/sonic v1.5.0
